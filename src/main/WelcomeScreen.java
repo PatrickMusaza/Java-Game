@@ -3,10 +3,12 @@ package main;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WelcomeScreen extends JPanel {
+
     private List<Image> carouselImages;
     private int currentImageIndex = 0;
     private Timer carouselTimer;
@@ -28,8 +30,12 @@ public class WelcomeScreen extends JPanel {
     private void loadImages() {
         carouselImages = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
-            ImageIcon ii = new ImageIcon(getClass().getResource("/components/resources/images/welcome_" + i + ".jpg"));
-            carouselImages.add(ii.getImage());
+            URL resource = getClass().getResource("/components/resources/images/welcome_" + i + ".jpg");
+            if (resource == null) {
+                System.err.println("Image not found: /components/resources/images/welcome_" + i + ".jpg");
+            } else {
+                carouselImages.add(new ImageIcon(resource).getImage());
+            }
         }
     }
 
@@ -66,12 +72,12 @@ public class WelcomeScreen extends JPanel {
         add(progressBar, BorderLayout.SOUTH);
 
         // Simulated random loading
-        Timer loadingTimer = new Timer(50, new AbstractAction() {
+        Timer loadingTimer = new Timer(200, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int val = progressBar.getValue();
                 if (val < 100) {
-                    int increment = 1 + (int)(Math.random() * 3); // Random increment between 1-3
+                    int increment = 1 + (int) (Math.random() * 3); // Random increment between 1-3
                     progressBar.setValue(Math.min(val + increment, 100));
                 } else {
                     ((Timer) e.getSource()).stop();
