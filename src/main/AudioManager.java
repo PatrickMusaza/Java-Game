@@ -1,62 +1,88 @@
 package main;
 
 import javax.sound.sampled.*;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AudioManager {
     private static Clip backgroundMusic;
-    private static Map<String, AudioInputStream> soundStreams = new HashMap<>();
+    private static final Map<String, Clip> soundClips = new HashMap<>();
     private static float volume = 0.7f;
 
     static {
-        // Register all sound files as resources
-        try {
-            soundStreams.put("shoot.wav", getAudioInputStream("/sounds/shoot.wav"));
-            soundStreams.put("explosion.wav", getAudioInputStream("/sounds/explosion.wav"));
-            soundStreams.put("bonus.wav", getAudioInputStream("/sounds/bonus.wav"));
-            soundStreams.put("gameover.wav", getAudioInputStream("/sounds/gameover.wav"));
-            soundStreams.put("loading_complete.wav", getAudioInputStream("/sounds/loading_complete.wav"));
-            soundStreams.put("bonus_collect.wav", getAudioInputStream("/sounds/bonus_collect.wav"));
-            soundStreams.put("life_lost.wav", getAudioInputStream("/sounds/life_lost.wav"));
+        loadAllSounds();
+    }
 
-            // Load and configure background music
-            AudioInputStream bgMusicStream = getAudioInputStream("/sounds/background.wav");
-            backgroundMusic = AudioSystem.getClip();
-            backgroundMusic.open(bgMusicStream);
-            setVolume(volume); // Apply volume to background music
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+    private static void loadAllSounds() {
+        new Thread(() -> {
+            // Sound effects
+            loadSoundAsResource("shoot.wav");
+            loadSoundAsResource("explosion.wav");
+            loadSoundAsResource("bonus.wav");
+            loadSoundAsResource("gameover.wav");
+            loadSoundAsResource("loading_complete.wav");
+            loadSoundAsResource("life_lost.wav");
+            loadSoundAsResource("background.wav");
+
+            // Background music
+            loadBackgroundMusic();
+            System.out.println("Audio loading complete");
+        }).start();
+    }
+
+    private static void loadSoundAsResource(String filename) {
+        try {
+            URL soundUrl = AudioManager.class.getResource("/components/resources/sounds/" + filename);
+            if (soundUrl == null) {
+                System.err.println("Resource not found: " + filename);
+                return;
+            }
+
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundUrl);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            soundClips.put(filename, clip);
+            System.out.println("Successfully loaded: " + filename);
+        } catch (Exception e) {
+            System.err.println("Failed to load " + filename + ":");
             e.printStackTrace();
         }
     }
 
-    // Helper method to load an audio file from the classpath
-    private static AudioInputStream getAudioInputStream(String path) throws IOException, UnsupportedAudioFileException {
-        InputStream resourceStream = AudioManager.class.getResourceAsStream(path);
-        if (resourceStream == null) {
-            throw new IOException("Audio resource not found: " + path);
+    private static void loadBackgroundMusic() {
+        try {
+            URL musicUrl = AudioManager.class.getResource("/components/resources/sounds/background.wav");
+            if (musicUrl == null) {
+                System.err.println("Background music not found");
+                return;
+            }
+
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(musicUrl);
+            backgroundMusic = AudioSystem.getClip();
+            backgroundMusic.open(audioStream);
+            setClipVolume(backgroundMusic, volume);
+            System.out.println("Loaded background music");
+        } catch (Exception e) {
+            System.err.println("Failed to load background music:");
+            e.printStackTrace();
         }
-        return AudioSystem.getAudioInputStream(resourceStream);
     }
 
-    // Play a sound effect from the sound map
     public static void playSound(String soundName) {
-        if (!soundStreams.containsKey(soundName))
+        Clip clip = soundClips.get(soundName);
+        if (clip == null) {
+            System.err.println("Sound not available: " + soundName);
             return;
+        }
 
-        new Thread(() -> {
-            try {
-                AudioInputStream audioInputStream = soundStreams.get(soundName);
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioInputStream);
-                setClipVolume(clip, volume);
-                clip.start();
-            } catch (IOException | LineUnavailableException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        // Stop and rewind if already playing
+        if (clip.isRunning()) {
+            clip.stop();
+        }
+        clip.setFramePosition(0);
+        clip.start();
     }
 
     // Set the volume of a given clip
