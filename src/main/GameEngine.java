@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameEngine extends JPanel implements Runnable {
+
     private Player player;
     private List<Enemy> enemies = new CopyOnWriteArrayList<>();
     private List<Projectile> projectiles = new CopyOnWriteArrayList<>();
@@ -31,6 +32,13 @@ public class GameEngine extends JPanel implements Runnable {
         setupKeyListeners();
 
         player = new Player(Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT - 100);
+        setFocusable(true);
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        SwingUtilities.invokeLater(this::requestFocusInWindow);
     }
 
     private void loadBackground() {
@@ -67,33 +75,40 @@ public class GameEngine extends JPanel implements Runnable {
                 }
             }
         });
-
-        setFocusable(true);
-        requestFocus();
     }
 
     private void handleKeyPress(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT -> player.setMovingLeft(true);
-            case KeyEvent.VK_RIGHT -> player.setMovingRight(true);
-            case KeyEvent.VK_UP -> player.setMovingUp(true);
-            case KeyEvent.VK_DOWN -> player.setMovingDown(true);
-            case KeyEvent.VK_SPACE, KeyEvent.VK_ENTER -> fireProjectile();
-            case KeyEvent.VK_P -> togglePause();
+            case KeyEvent.VK_LEFT ->
+                player.setMovingLeft(true);
+            case KeyEvent.VK_RIGHT ->
+                player.setMovingRight(true);
+            case KeyEvent.VK_UP ->
+                player.setMovingUp(true);
+            case KeyEvent.VK_DOWN ->
+                player.setMovingDown(true);
+            case KeyEvent.VK_SPACE, KeyEvent.VK_ENTER ->
+                fireProjectile();
+            case KeyEvent.VK_P ->
+                togglePause();
         }
     }
 
     private void handleKeyRelease(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT -> player.setMovingLeft(false);
-            case KeyEvent.VK_RIGHT -> player.setMovingRight(false);
-            case KeyEvent.VK_UP -> player.setMovingUp(false);
-            case KeyEvent.VK_DOWN -> player.setMovingDown(false);
+            case KeyEvent.VK_LEFT ->
+                player.setMovingLeft(false);
+            case KeyEvent.VK_RIGHT ->
+                player.setMovingRight(false);
+            case KeyEvent.VK_UP ->
+                player.setMovingUp(false);
+            case KeyEvent.VK_DOWN ->
+                player.setMovingDown(false);
         }
     }
 
     private void fireProjectile() {
-        AudioManager.playSound("shoot.wav");
+        AudioManager.playSound("fixed_shoot.wav");
         int bulletX = player.getX() + player.getWidth() / 2 - 8;
 
         projectiles.add(new Projectile(bulletX, player.getY(), false));
@@ -197,8 +212,9 @@ public class GameEngine extends JPanel implements Runnable {
                 enemies.remove(enemy);
                 if (!enemy.isBonus()) {
                     lives--;
-                    if (lives <= 0)
+                    if (lives <= 0) {
                         gameOver();
+                    }
                 }
             }
 
@@ -235,10 +251,10 @@ public class GameEngine extends JPanel implements Runnable {
     private void handlePlayerEnemyCollision(Enemy enemy) {
         if (enemy.isBonus()) {
             activateDoubleRocket();
-            AudioManager.playSound("bonus_collect.wav");
+            AudioManager.playSound("fixed_bonus.wav");
         } else {
             lives--;
-            AudioManager.playSound("life_lost.wav");
+            AudioManager.playSound("fixed_life_lost.wav");
             if (lives <= 0) {
                 gameOver();
             }
@@ -249,13 +265,13 @@ public class GameEngine extends JPanel implements Runnable {
     private void activateDoubleRocket() {
         doubleRocketActive = true;
         doubleRocketEndTime = System.currentTimeMillis() + 10000; // 10 seconds
-        AudioManager.playSound("bonus.wav");
+        AudioManager.playSound("fixed_bonus.wav");
     }
 
     private void gameOver() {
         running = false;
         ScoreManager.saveScore(score);
-        AudioManager.playSound("gameover.wav");
+        AudioManager.playSound("fixed_gameover.wav");
         JOptionPane.showMessageDialog(this, "Game Over! Your score: " + score);
         Main.showHomeScreen();
     }
@@ -264,15 +280,12 @@ public class GameEngine extends JPanel implements Runnable {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Draw background
         g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 
-        // Draw game elements
         player.draw(g);
         enemies.forEach(enemy -> enemy.draw(g));
         projectiles.forEach(projectile -> projectile.draw(g));
 
-        // Draw HUD
         drawHUD(g);
 
         if (!running) {

@@ -86,7 +86,7 @@ public class WelcomeScreen extends JPanel {
                     progressBar.setValue(Math.min(val + increment, 100));
                 } else {
                     ((Timer) e.getSource()).stop();
-                    AudioManager.playSound("loading_complete.wav");
+                    AudioManager.playSound("fixed_loading_complete.wav");
                     Main.showHomeScreen();
                 }
             }

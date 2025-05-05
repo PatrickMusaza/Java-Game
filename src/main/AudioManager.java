@@ -18,13 +18,13 @@ public class AudioManager {
     private static void loadAllSounds() {
         new Thread(() -> {
             // Sound effects
-            loadSoundAsResource("shoot.wav");
+            loadSoundAsResource("fixed_shoot.wav");
             loadSoundAsResource("explosion.wav");
-            loadSoundAsResource("bonus.wav");
-            loadSoundAsResource("gameover.wav");
-            loadSoundAsResource("loading_complete.wav");
-            loadSoundAsResource("life_lost.wav");
-            loadSoundAsResource("background.wav");
+            loadSoundAsResource("fixed_bonus.wav");
+            loadSoundAsResource("fixed_gameover.wav");
+            loadSoundAsResource("fixed_loading_complete.wav");
+            loadSoundAsResource("fixed_life_lost.wav");
+            loadSoundAsResource("fixed_background.wav");
 
             // Background music
             loadBackgroundMusic();
@@ -53,7 +53,7 @@ public class AudioManager {
 
     private static void loadBackgroundMusic() {
         try {
-            URL musicUrl = AudioManager.class.getResource("/components/resources/sounds/background.wav");
+            URL musicUrl = AudioManager.class.getResource("/components/resources/sounds/fixed_background.wav");
             if (musicUrl == null) {
                 System.err.println("Background music not found");
                 return;

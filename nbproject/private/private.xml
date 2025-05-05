@@ -2,6 +2,19 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/Enemy.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/Main.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/Level.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/WelcomeScreen.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/AudioManager.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/Projectile.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/Constants.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/HelpScreen.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/Player.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/HomeScreen.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/ScoreManager.java</file>
+            <file>file:/C:/Users/user/Downloads/JAVA/Game/src/main/GameEngine.java</file>
+        </group>
     </open-files>
 </project-private>

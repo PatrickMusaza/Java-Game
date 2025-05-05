@@ -16,8 +16,10 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             frame = new JFrame("Airplane Shooting Game");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
-            frame.setExtendedState(1);
+           // frame.setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
+            // Maximize window with decorations
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            frame.setUndecorated(false); 
             frame.setLocationRelativeTo(null);
             frame.setResizable(true);
 
