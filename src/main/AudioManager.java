@@ -58,16 +58,18 @@ public class AudioManager {
                 System.err.println("Background music not found");
                 return;
             }
-
+    
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(musicUrl);
             backgroundMusic = AudioSystem.getClip();
             backgroundMusic.open(audioStream);
             setClipVolume(backgroundMusic, volume);
+    
+            backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY); // Loop indefinitely
             System.out.println("Loaded background music");
         } catch (Exception e) {
             System.err.println("Failed to load background music:");
             e.printStackTrace();
-        }
+        }
     }
 
     public static void playSound(String soundName) {
